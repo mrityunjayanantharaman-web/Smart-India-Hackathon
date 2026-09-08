@@ -276,6 +276,9 @@ async function loadReport() {
 			ml_classification: data.ml_classification.classification,
 			ml_confidence: data.ml_classification.confidence,
 			ml_model: data.ml_classification.model,
+			pm25_kg: data.emissions?.pm25_kg ?? data.thermal_activity?.pm25_kg ?? null,
+			co2_tonnes: data.emissions?.co2_tonnes ?? data.thermal_activity?.co2_tonnes ?? null,
+			emissions_assumptions: data.emissions?.assumptions ?? "",
 		};
 		renderReport(site);
 		renderAIEvidence(data);
@@ -322,7 +325,7 @@ function renderReport(site) {
       <section class="folio">
         <div class="folio-heading">
           <span class="folio-number">Folio II</span>
-          <span class="folio-title">Thermal Activity</span>
+          <span class="folio-title">Thermal Activity & Emissions</span>
         </div>
         <hr class="folio-rule">
         <div class="metric-grid">
@@ -341,6 +344,11 @@ function renderReport(site) {
         </div>
         ${row("AVERAGE FRP", format(site.avg_frp, 2) + " MW")}
         ${row("PEAK FRP", format(site.max_frp, 2) + " MW")}
+        ${row("ESTIMATED PM2.5", site.pm25_kg != null ? format(site.pm25_kg, 2) + " kg" : "N/A")}
+        ${row("ESTIMATED CO₂", site.co2_tonnes != null ? format(site.co2_tonnes, 3) + " tonnes" : "N/A")}
+        <div class="emissions-assumptions" style="font-family:var(--font-sans);font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.5;padding:8px 10px;background:var(--bg-surface-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);">
+          <strong>Emissions Assumptions:</strong> ${escapeHtml(site.emissions_assumptions || "FRE estimated using avg FRP (MW) × active days × 86,400s × 0.05 duty cycle; biomass consumed via Wooster et al. 2005 (0.368 kg/MJ); emission factors are literature-typical values by source category (Akagi et al. 2011 style EFs), not site-measured. Treat as estimates.")}
+        </div>
       </section>
 
       <section class="folio">

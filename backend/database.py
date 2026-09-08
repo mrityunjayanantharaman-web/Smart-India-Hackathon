@@ -42,6 +42,7 @@ def initialize_database() -> None:
                 "UPDATE thermal_events SET created_at = current_timestamp WHERE created_at IS NULL"
             )
         ensure_location_name_column(connection)
+        ensure_emissions_columns(connection)
 
 
 def ensure_location_name_column(connection) -> None:
@@ -57,6 +58,22 @@ def ensure_location_name_column(connection) -> None:
         connection.execute(
             "ALTER TABLE persistent_firms_sites ADD COLUMN location_name VARCHAR"
         )
+
+
+def ensure_emissions_columns(connection) -> None:
+    columns = connection.execute(
+        """
+        SELECT column_name
+        FROM information_schema.columns
+        WHERE table_name = 'persistent_firms_sites'
+        """
+    ).fetchall()
+    existing_columns = {row[0] for row in columns}
+    if existing_columns:
+        if "pm25_kg" not in existing_columns:
+            connection.execute("ALTER TABLE persistent_firms_sites ADD COLUMN pm25_kg DOUBLE")
+        if "co2_tonnes" not in existing_columns:
+            connection.execute("ALTER TABLE persistent_firms_sites ADD COLUMN co2_tonnes DOUBLE")
 
 
 def insert_thermal_event(event: dict, h3_cell: str) -> dict:

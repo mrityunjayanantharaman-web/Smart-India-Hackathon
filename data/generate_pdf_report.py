@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 
 import duckdb
@@ -9,8 +10,11 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from ai.emissions import estimate_emissions
+
 DB_PATH = PROJECT_ROOT / "data" / "processed" / "agninetra.duckdb"
 OUTPUT_DIR = PROJECT_ROOT / "data" / "processed" / "pdf_reports"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
@@ -180,7 +184,15 @@ def make_report(site):
             ["TROPOMI NO2 contextual mean", str(no2_mean) if no2_mean is not None else "N/A"],
             ["TROPOMI NO2 contextual maximum", str(no2_max) if no2_max is not None else "N/A"],
         ], [200, 300]),
-        Paragraph("5. AI DECISION EVIDENCE", heading_style),
+        Paragraph("5. ESTIMATED ATMOSPHERIC EMISSIONS", heading_style),
+        make_table([
+            ["Estimated PM2.5", f"{estimate_emissions(avg_frp, active_days, ml_classification or classification)['pm25_kg']:.2f} kg"],
+            ["Estimated CO2", f"{estimate_emissions(avg_frp, active_days, ml_classification or classification)['co2_tonnes']:.3f} tonnes"],
+            ["Combustion Coefficient", "0.368 kg/MJ (Wooster et al. 2005)"],
+            ["Duty Cycle Fraction", "0.05 (satellite sampling assumption)"],
+            ["Emission Factors Source", "Akagi et al. 2011 literature-typical values (not site-measured)"],
+        ], [200, 300]),
+        Paragraph("6. AI DECISION EVIDENCE", heading_style),
     ]
 
     explanation = shap_lookup.get(h3_cell)
