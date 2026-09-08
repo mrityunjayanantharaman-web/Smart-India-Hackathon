@@ -9,8 +9,14 @@ AgniNetra/
 ├── ai/                         Machine-learning training, validation, and explanations
 ├── backend/                    FastAPI application and DuckDB access layer
 │   ├── database.py             Database initialization and queries
-│   ├── main.py                 API routes and static dashboard hosting
-│   └── models.py               Request and response models
+│   ├── main.py                 Application composition and router registration
+│   ├── models.py               Request and response models
+│   └── routes/                 Feature-specific API routers
+│       ├── system.py           Root and health endpoints
+│       ├── thermal_events.py   Thermal-event ingestion and listing
+│       ├── sites.py            Persistent, FIRMS, and risk-site features
+│       ├── dossiers.py         Investigation dossier data and page route
+│       └── reports.py          PDF investigation report downloads
 ├── data/                       Ingestion, processing, classification, and reports
 │   ├── raw/                    Local source data; ignored by Git
 │   └── processed/              Local database and generated outputs; ignored by Git
