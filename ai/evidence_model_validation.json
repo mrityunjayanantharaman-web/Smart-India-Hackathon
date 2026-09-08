@@ -1,0 +1,178 @@
+{
+  "validation_type": "stratified_k_fold",
+  "folds": 4,
+  "target": "evidence_label",
+  "label_type": "weak/evidence-based labels",
+  "ground_truth": false,
+  "total_sites_after_merge": 36,
+  "class_distribution": {
+    "Agricultural": 22,
+    "Wildfire": 10,
+    "Industrial": 4
+  },
+  "classes": [
+    "Agricultural",
+    "Industrial",
+    "Wildfire"
+  ],
+  "features": [
+    "detection_count",
+    "active_days",
+    "persistence_score",
+    "active_day_ratio",
+    "detection_frequency",
+    "avg_frp",
+    "max_frp",
+    "frp_stddev",
+    "frp_coefficient_variation",
+    "avg_brightness_temperature",
+    "daytime_detections",
+    "nighttime_detections",
+    "night_ratio",
+    "nightfire_match",
+    "nightfire_matches",
+    "no2_mean",
+    "no2_max",
+    "built_up_ratio",
+    "cropland_ratio",
+    "tree_cover_ratio",
+    "grassland_ratio",
+    "bare_land_ratio",
+    "nearby_power_plants_10km",
+    "industrial_context_score",
+    "wildland_context_score"
+  ],
+  "feature_count": 25,
+  "overall_metrics": {
+    "accuracy": 0.9166666666666666,
+    "balanced_accuracy": 0.8863636363636364,
+    "macro_precision": 0.8704906204906204,
+    "macro_recall": 0.8863636363636364,
+    "macro_f1": 0.8775378368401624
+  },
+  "fold_statistics": {
+    "accuracy": {
+      "mean": 0.9166666666666666,
+      "std": 0.05555555555555558,
+      "min": 0.8888888888888888,
+      "max": 1.0
+    },
+    "balanced_accuracy": {
+      "mean": 0.8861111111111111,
+      "std": 0.14917468424552838,
+      "min": 0.6666666666666666,
+      "max": 1.0
+    },
+    "macro_precision": {
+      "mean": 0.8333333333333334,
+      "std": 0.16355112715421935,
+      "min": 0.6111111111111112,
+      "max": 1.0
+    },
+    "macro_recall": {
+      "mean": 0.8861111111111111,
+      "std": 0.14917468424552838,
+      "min": 0.6666666666666666,
+      "max": 1.0
+    },
+    "macro_f1": {
+      "mean": 0.8478114478114477,
+      "std": 0.15377145294213693,
+      "min": 0.6363636363636364,
+      "max": 1.0
+    }
+  },
+  "fold_results": [
+    {
+      "fold": 1,
+      "train_samples": 27,
+      "test_samples": 9,
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "macro_f1": 1.0,
+      "macro_precision": 1.0,
+      "macro_recall": 1.0
+    },
+    {
+      "fold": 2,
+      "train_samples": 27,
+      "test_samples": 9,
+      "accuracy": 0.8888888888888888,
+      "balanced_accuracy": 0.9444444444444445,
+      "macro_f1": 0.903030303030303,
+      "macro_precision": 0.8888888888888888,
+      "macro_recall": 0.9444444444444445
+    },
+    {
+      "fold": 3,
+      "train_samples": 27,
+      "test_samples": 9,
+      "accuracy": 0.8888888888888888,
+      "balanced_accuracy": 0.9333333333333332,
+      "macro_f1": 0.8518518518518517,
+      "macro_precision": 0.8333333333333334,
+      "macro_recall": 0.9333333333333332
+    },
+    {
+      "fold": 4,
+      "train_samples": 27,
+      "test_samples": 9,
+      "accuracy": 0.8888888888888888,
+      "balanced_accuracy": 0.6666666666666666,
+      "macro_f1": 0.6363636363636364,
+      "macro_precision": 0.6111111111111112,
+      "macro_recall": 0.6666666666666666
+    }
+  ],
+  "classification_report": {
+    "Agricultural": {
+      "precision": 0.9523809523809523,
+      "recall": 0.9090909090909091,
+      "f1-score": 0.9302325581395349,
+      "support": 22.0
+    },
+    "Industrial": {
+      "precision": 0.75,
+      "recall": 0.75,
+      "f1-score": 0.75,
+      "support": 4.0
+    },
+    "Wildfire": {
+      "precision": 0.9090909090909091,
+      "recall": 1.0,
+      "f1-score": 0.9523809523809523,
+      "support": 10.0
+    },
+    "accuracy": 0.9166666666666666,
+    "macro avg": {
+      "precision": 0.8704906204906204,
+      "recall": 0.8863636363636364,
+      "f1-score": 0.8775378368401624,
+      "support": 36.0
+    },
+    "weighted avg": {
+      "precision": 0.9178691678691678,
+      "recall": 0.9166666666666666,
+      "f1-score": 0.9163590500799804,
+      "support": 36.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      20,
+      1,
+      1
+    ],
+    [
+      1,
+      3,
+      0
+    ],
+    [
+      0,
+      0,
+      10
+    ]
+  ],
+  "note": "Metrics measure agreement with evidence-based weak labels and are not ground-truth real-world accuracy. The dataset is small, so results should be treated as provisional."
+}

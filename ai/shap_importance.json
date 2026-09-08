@@ -1,0 +1,54 @@
+[
+  {
+    "feature": "persistence_score",
+    "mean_abs_shap": 1.1380398273468018
+  },
+  {
+    "feature": "detection_count",
+    "mean_abs_shap": 0.724993884563446
+  },
+  {
+    "feature": "no2_max",
+    "mean_abs_shap": 0.5093951225280762
+  },
+  {
+    "feature": "avg_brightness_temperature",
+    "mean_abs_shap": 0.4318735897541046
+  },
+  {
+    "feature": "max_frp",
+    "mean_abs_shap": 0.15143142640590668
+  },
+  {
+    "feature": "frp_stddev",
+    "mean_abs_shap": 0.1509494036436081
+  },
+  {
+    "feature": "avg_frp",
+    "mean_abs_shap": 0.1160467192530632
+  },
+  {
+    "feature": "no2_mean",
+    "mean_abs_shap": 0.059820398688316345
+  },
+  {
+    "feature": "night_ratio",
+    "mean_abs_shap": 0.012586328200995922
+  },
+  {
+    "feature": "frp_coefficient_variation",
+    "mean_abs_shap": 0.01184928696602583
+  },
+  {
+    "feature": "active_days",
+    "mean_abs_shap": 0.0
+  },
+  {
+    "feature": "nightfire_match",
+    "mean_abs_shap": 0.0
+  },
+  {
+    "feature": "nightfire_matches",
+    "mean_abs_shap": 0.0
+  }
+]

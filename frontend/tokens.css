@@ -1,0 +1,244 @@
+/* ═══════════════════════════════════════════════════════════════
+   AgniNetra — Thermal Intelligence Case File Design System
+   Token file · v1.0
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Google Fonts ─────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap');
+
+/* ── Design Tokens ────────────────────────────────────────────── */
+:root, [data-theme="ledger"] {
+  /* Surfaces */
+  --bg-app:               #EDE9DB;
+  --bg-surface:           #F1EEE3;
+  --bg-surface-elevated:  #E8E3D4;
+  --bg-surface-subtle:    #E3DECD;
+  --bg-card:              #F1EEE3;
+  --bg-card-hover:        #EAE5D6;
+
+  /* Borders */
+  --border-subtle:        rgba(28, 42, 32, 0.12);
+  --border-medium:        rgba(28, 42, 32, 0.22);
+  --border-focus:         #1C2A20;
+
+  /* Text */
+  --text-primary:         #1C2A20;
+  --text-secondary:       #4B5D50;
+  --text-muted:           #7A8A7C;
+  --text-inverse:         #F1EEE3;
+
+  /* Primary (ink-based) */
+  --primary:              #1C2A20;
+  --primary-hover:        #0F1911;
+  --primary-glow:         transparent;
+  --primary-light:        #E8E3D4;
+  --primary-surface:      rgba(28, 42, 32, 0.06);
+
+  /* Status — restrained signal colors */
+  --status-success:       #4B6B4E;
+  --status-success-bg:    rgba(75, 107, 78, 0.12);
+  --status-warning:       #9C7A24;
+  --status-warning-bg:    rgba(156, 122, 36, 0.12);
+  --status-danger:        #8B3A2B;
+  --status-danger-bg:     rgba(139, 58, 43, 0.10);
+  --status-info:          #4B5D50;
+  --status-info-bg:       rgba(75, 93, 80, 0.10);
+
+  /* Thermal accent */
+  --thermal-accent:       #B65E2E;
+
+  /* Shadows — paper-like, no glows */
+  --shadow-sm:            0 1px 0 0 rgba(28, 42, 32, 0.08);
+  --shadow-md:            0 2px 8px -2px rgba(28, 42, 32, 0.12);
+  --shadow-lg:            0 8px 24px -6px rgba(28, 42, 32, 0.16);
+  --shadow-glow:          none;
+
+  /* Radii — restrained, document-like */
+  --radius-sm:            2px;
+  --radius-md:            3px;
+  --radius-lg:            4px;
+  --radius-full:          9999px;
+
+  /* Typography */
+  --font-display:         'Fraunces', Georgia, serif;
+  --font-sans:            'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono:            'IBM Plex Mono', 'JetBrains Mono', monospace;
+}
+
+/* ── Reset & Base ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Typography Utilities ─────────────────────────────────────── */
+.font-display { font-family: var(--font-display); }
+.font-sans    { font-family: var(--font-sans); }
+.font-mono    { font-family: var(--font-mono); }
+
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted     { color: var(--text-muted); }
+
+/* ── Folio Heading ────────────────────────────────────────────── */
+.folio {
+  margin-bottom: 28px;
+}
+
+.folio-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 4px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.folio-number {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.folio-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+}
+
+.folio-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--border-medium);
+  margin: 6px 0 16px;
+  border: none;
+}
+
+/* ── Case Stamp ───────────────────────────────────────────────── */
+.case-stamp {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 108px;
+  min-height: 72px;
+  padding: 10px 14px;
+  border: 2px solid currentColor;
+  transform: rotate(-2deg);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.case-stamp--high     { color: var(--status-danger); }
+.case-stamp--medium   { color: var(--status-warning); }
+.case-stamp--low      { color: var(--status-success); }
+.case-stamp--probable { color: var(--text-secondary); }
+
+@keyframes case-stamp-press {
+  0%   { transform: rotate(-2deg) scale(1.12); opacity: 0; }
+  60%  { transform: rotate(-2deg) scale(0.97); opacity: 1; }
+  100% { transform: rotate(-2deg) scale(1); }
+}
+
+.case-stamp--just-created {
+  animation: case-stamp-press 220ms ease-out;
+}
+
+/* ── Eyebrow Label ────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* ── Data Row ─────────────────────────────────────────────────── */
+.data-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 13px;
+}
+
+.data-row:last-child { border-bottom: none; }
+
+.data-row .label {
+  color: var(--text-secondary);
+  font-family: var(--font-sans);
+}
+
+.data-row .value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  text-align: right;
+  color: var(--text-primary);
+}
+
+/* ── Disclaimer Notice ────────────────────────────────────────── */
+.disclaimer-notice {
+  padding: 14px 16px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-subtle);
+  color: var(--text-secondary);
+  font-size: 0.73rem;
+  line-height: 1.6;
+  font-family: var(--font-sans);
+}
+
+/* ── Button — Ink ─────────────────────────────────────────────── */
+.btn-ink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: var(--text-inverse);
+  font-family: var(--font-sans);
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.btn-ink:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+/* ── Scrollbar (subtle) ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-medium); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }

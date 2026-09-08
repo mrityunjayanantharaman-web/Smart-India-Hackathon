@@ -1,0 +1,102 @@
+{
+  "model": "XGBoost",
+  "target": "evidence_label",
+  "label_type": "weak/evidence-based labels",
+  "ground_truth": false,
+  "total_merged_sites": 145,
+  "excluded_unknown_or_invalid": 109,
+  "usable_sites": 36,
+  "classes": [
+    "Agricultural",
+    "Industrial",
+    "Wildfire"
+  ],
+  "class_distribution": {
+    "Agricultural": 22,
+    "Wildfire": 10,
+    "Industrial": 4
+  },
+  "features": [
+    "detection_count",
+    "active_days",
+    "persistence_score",
+    "active_day_ratio",
+    "detection_frequency",
+    "avg_frp",
+    "max_frp",
+    "frp_stddev",
+    "frp_coefficient_variation",
+    "avg_brightness_temperature",
+    "daytime_detections",
+    "nighttime_detections",
+    "night_ratio",
+    "nightfire_match",
+    "nightfire_matches",
+    "no2_mean",
+    "no2_max",
+    "built_up_ratio",
+    "cropland_ratio",
+    "tree_cover_ratio",
+    "grassland_ratio",
+    "bare_land_ratio",
+    "nearby_power_plants_10km",
+    "industrial_context_score",
+    "wildland_context_score"
+  ],
+  "feature_count": 25,
+  "train_samples": 27,
+  "test_samples": 9,
+  "accuracy": 0.7777777777777778,
+  "classification_report": {
+    "Agricultural": {
+      "precision": 1.0,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.8,
+      "support": 6.0
+    },
+    "Industrial": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 1.0
+    },
+    "Wildfire": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1-score": 0.6666666666666666,
+      "support": 2.0
+    },
+    "accuracy": 0.7777777777777778,
+    "macro avg": {
+      "precision": 0.8333333333333334,
+      "recall": 0.8888888888888888,
+      "f1-score": 0.8222222222222223,
+      "support": 9.0
+    },
+    "weighted avg": {
+      "precision": 0.8888888888888888,
+      "recall": 0.7777777777777778,
+      "f1-score": 0.7925925925925926,
+      "support": 9.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      4,
+      0,
+      2
+    ],
+    [
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      2
+    ]
+  ],
+  "model_path": "ai/agninetra_xgb_evidence.json",
+  "note": "Metrics measure agreement with evidence-based weak labels, not ground-truth real-world accuracy."
+}

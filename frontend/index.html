@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgniNetra | National Thermal Intelligence Index</title>
+  <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    body {
+      margin: 0;
+      background: var(--bg-app);
+      color: var(--text-primary);
+      overflow: hidden;
+    }
+    header {
+      height: 72px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface-elevated);
+      border-bottom: 1px solid var(--border-medium);
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+    }
+    .title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 22px;
+      color: var(--text-primary);
+    }
+    .sub {
+      font-family: var(--font-sans);
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+    .system-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--status-success);
+    }
+    
+    main {
+      height: calc(100vh - 72px);
+      display: grid;
+      grid-template-columns: 340px minmax(0, 1fr);
+    }
+    aside {
+      padding: 20px;
+      overflow: auto;
+      background: var(--bg-surface);
+      border-right: 1px solid var(--border-medium);
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .stat {
+      padding: 14px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+    }
+    .stat .value {
+      font-size: 24px;
+      font-weight: 800;
+      font-family: var(--font-sans);
+      color: var(--text-primary);
+    }
+    .stat .label {
+      color: var(--text-secondary);
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-elevated);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      margin-bottom: 24px;
+      outline: none;
+    }
+
+    .search-wrap {
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .search-box {
+      display: flex;
+      align-items: stretch;
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-elevated);
+      overflow: hidden;
+    }
+    .search-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      color: var(--text-muted);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .search-input {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 12px;
+      padding: 10px 8px 10px 0;
+      outline: none;
+      min-width: 0;
+    }
+    .search-input::placeholder {
+      color: var(--text-muted);
+    }
+    .search-btn {
+      border: 0;
+      border-left: 1px solid var(--border-medium);
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+    .search-btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+    .search-results {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 6px);
+      z-index: 20;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      max-height: 280px;
+      overflow: auto;
+    }
+    .search-results.open {
+      display: block;
+    }
+    .search-results-title {
+      padding: 8px 12px 4px;
+      font-family: var(--font-sans);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .search-result {
+      padding: 10px 12px;
+      border-top: 1px solid var(--border-subtle);
+      cursor: pointer;
+    }
+    .search-result:hover,
+    .search-result.selected {
+      background: var(--bg-card-hover);
+    }
+    .search-result-id {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-primary);
+    }
+    .search-result-meta {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 3px;
+    }
+    .search-result-location {
+      font-family: var(--font-sans);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .search-empty {
+      padding: 12px;
+      font-family: var(--font-sans);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+    .site {
+      padding: 12px;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      border-left-width: 3px;
+      border-left-style: solid;
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms;
+    }
+    .site:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-medium);
+    }
+    .site.high { border-left-color: var(--status-danger); }
+    .site.medium { border-left-color: var(--status-warning); }
+    .site.low { border-left-color: var(--status-success); }
+    
+    .site-case {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-primary);
+      letter-spacing: 0.04em;
+    }
+    .site-type {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .site-risk {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+    .site-meta {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      margin-bottom: 8px;
+    }
+    .site-btn {
+      width: 100%;
+      padding: 8px;
+      background: var(--primary);
+      color: var(--text-inverse);
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .site-btn:hover {
+      background: var(--primary-hover);
+    }
+    
+    .map {
+      position: relative;
+      min-width: 0;
+    }
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+    .h3-legend {
+      position: absolute;
+      z-index: 1000;
+      left: 12px;
+      bottom: 12px;
+      padding: 10px 12px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      font-family: var(--font-sans);
+      font-size: 10px;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      pointer-events: none;
+    }
+    .h3-legend-title {
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+    .h3-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+    }
+    .h3-legend-swatch {
+      width: 10px;
+      height: 10px;
+      flex-shrink: 0;
+    }
+    .panel {
+      display: none;
+      position: absolute;
+      z-index: 1000;
+      right: 20px;
+      top: 20px;
+      width: 360px;
+      max-height: calc(100% - 40px);
+      overflow: auto;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      box-shadow: var(--shadow-lg);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .panel h2 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .close {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 20px;
+      line-height: 1;
+    }
+    
+    .metric {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 12px;
+    }
+    .metric span:first-child {
+      color: var(--text-secondary);
+      font-family: var(--font-sans);
+    }
+    .metric span:last-child {
+      color: var(--text-primary);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      text-align: right;
+    }
+    
+    @media(max-width: 800px) {
+      body { overflow: auto; }
+      main { height: auto; min-height: calc(100vh - 72px); grid-template-columns: 1fr; }
+      aside { max-height: 45vh; border-right: 0; border-bottom: 1px solid var(--border-medium); }
+      .map { height: 55vh; }
+      .panel { left: 16px; right: 16px; width: auto; top: 16px; max-height: calc(100% - 32px); }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="title">AgniNetra</div>
+    <div class="sub">National Thermal Intelligence Platform</div>
+  </div>
+  <div class="system-status">
+    <span class="status-dot"></span>
+    SYSTEM ACTIVE
+  </div>
+</header>
+<main>
+  <aside>
+    <div class="eyebrow">NATIONAL OVERVIEW</div>
+    <div class="stats">
+      <div class="stat"><div class="value" id="total">-</div><div class="label">Persistent Sites</div></div>
+      <div class="stat"><div class="value" id="industrial">-</div><div class="label">Industrial</div></div>
+      <div class="stat"><div class="value" id="medium">-</div><div class="label">Medium Risk</div></div>
+      <div class="stat"><div class="value" id="high">-</div><div class="label">High Risk</div></div>
+    </div>
+    <div class="eyebrow">SEARCH SITES</div>
+    <div class="search-wrap" id="searchWrap">
+      <div class="search-box">
+        <span class="search-icon" aria-hidden="true">&#128269;</span>
+        <input
+          id="searchInput"
+          class="search-input"
+          type="search"
+          placeholder="Search place or Case ID..."
+          autocomplete="off"
+        >
+        <button type="button" class="search-btn" id="searchBtn">Search</button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+    <div class="eyebrow">FILTER BY SOURCE</div>
+    <select id="filter">
+      <option value="ALL">All Sources</option>
+      <option value="Industrial">Probable Industrial</option>
+      <option value="Agricultural">Probable Agricultural</option>
+      <option value="Wildfire">Probable Wildfire</option>
+      <option value="Flare">Probable Flare</option>
+    </select>
+    <div class="list" id="list">
+      <div style="font-family:var(--font-mono);font-size:11px;color:var(--text-muted);">Loading satellite intelligence...</div>
+    </div>
+  </aside>
+  <section class="map">
+    <div id="map"></div>
+    <div class="h3-legend">
+      <div class="h3-legend-title">H3 Thermal Site</div>
+      <div class="h3-legend-item"><span class="h3-legend-swatch" style="background:#8B3A2B;"></span>Probable Industrial</div>
+      <div class="h3-legend-item"><span class="h3-legend-swatch" style="background:#4B6B4E;"></span>Probable Agricultural</div>
+      <div class="h3-legend-item"><span class="h3-legend-swatch" style="background:#B65E2E;"></span>Probable Wildfire</div>
+      <div class="h3-legend-item"><span class="h3-legend-swatch" style="background:#9C7A24;"></span>Probable Flare</div>
+    </div>
+    <div class="panel" id="panel">
+      <div class="panel-header">
+        <h2>Investigation Site</h2>
+        <span class="close" id="close">×</span>
+      </div>
+      <div id="details"></div>
+    </div>
+  </section>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/h3-js@4.1.0"></script>
+<script>
+let sites=[], markers=[], h3Layers=[], selectedH3Cell=null; 
+const map = L.map('map').setView([22.5,79],5); 
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
+
+const color = p => p === 'HIGH' ? '#8B3A2B' : p === 'MEDIUM' ? '#9C7A24' : '#4B6B4E';
+
+function getFilteredSites() {
+  const f = document.getElementById('filter').value;
+  return sites.filter(s => f === 'ALL' || s.ml_classification === f);
+}
+
+function siteMatchesQuery(site, query) {
+  const q = query.toLowerCase();
+  const location = (site.location_name || '').toLowerCase();
+  const classification = (site.ml_classification || '').toLowerCase();
+  return (
+    site.h3_cell.toLowerCase().includes(q) ||
+    location.includes(q) ||
+    classification.includes(q)
+  );
+}
+
+function hideSearchResults() {
+  const results = document.getElementById('searchResults');
+  results.classList.remove('open');
+  results.innerHTML = '';
+}
+
+function renderSearchResults(matches, message) {
+  const results = document.getElementById('searchResults');
+  if (message) {
+    results.innerHTML = `<div class="search-empty">${message}</div>`;
+    results.classList.add('open');
+    return;
+  }
+
+  results.innerHTML = `
+    <div class="search-results-title">Search results</div>
+    ${matches.map(site => `
+      <div class="search-result" data-h3="${site.h3_cell}">
+        <div class="search-result-id">${site.h3_cell}</div>
+        <div class="search-result-meta">${site.ml_classification} · ${site.priority}</div>
+        <div class="search-result-location">${site.location_name || 'Location unavailable'}</div>
+      </div>
+    `).join('')}
+  `;
+
+  results.querySelectorAll('.search-result').forEach(item => {
+    item.addEventListener('click', () => {
+      const site = sites.find(s => s.h3_cell === item.dataset.h3);
+      if (site) {
+        selectSite(site);
+        hideSearchResults();
+      }
+    });
+  });
+
+  results.classList.add('open');
+}
+
+function selectSite(site) {
+  selectedH3Cell = site.h3_cell;
+  map.setView([site.latitude, site.longitude], 11);
+  show(site);
+  applySelectionHighlight();
+}
+
+function applySelectionHighlight() {
+  h3Layers.forEach(layer => {
+    const isSelected = layer._agninetraSite?.h3_cell === selectedH3Cell;
+    if (isSelected) {
+      layer.setStyle({
+        fillOpacity: 0.45,
+        weight: 3,
+        opacity: 1
+      });
+    }
+  });
+
+  markers.forEach(markerLayer => {
+    const site = markerLayer._agninetraSite;
+    if (!site) return;
+    const isSelected = site.h3_cell === selectedH3Cell;
+    const c = color(site.priority);
+    const size = isSelected ? 18 : 14;
+    const anchor = size / 2;
+    markerLayer.setIcon(L.divIcon({
+      className: '',
+      html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${c};border:${isSelected ? '3px' : '2px'} solid white;box-shadow:${isSelected ? '0 0 0 2px rgba(0,0,0,0.25)' : 'none'};"></div>`,
+      iconSize: [size, size],
+      iconAnchor: [anchor, anchor]
+    }));
+  });
+}
+
+function performSearch() {
+  const query = document.getElementById('searchInput').value.trim();
+  if (!query) {
+    hideSearchResults();
+    renderList();
+    return;
+  }
+
+  const matches = getFilteredSites()
+    .filter(site => siteMatchesQuery(site, query))
+    .slice(0, 10);
+
+  if (matches.length === 0) {
+    renderSearchResults([], 'No matching investigation site found.');
+    return;
+  }
+
+  const exact = matches.find(site => site.h3_cell.toLowerCase() === query.toLowerCase());
+  if (matches.length === 1 || exact) {
+    selectSite(exact || matches[0]);
+    hideSearchResults();
+    return;
+  }
+
+  renderSearchResults(matches);
+}
+
+function renderList() {
+  const visible = getFilteredSites();
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+  visible.slice(0, 15).forEach(s => {
+    const d = document.createElement('div');
+    d.className = 'site ' + s.priority.toLowerCase();
+    d.innerHTML = `
+      <div class="site-case">CASE ${s.h3_cell}</div>
+      <div class="site-type">PROBABLE ${s.ml_classification}</div>
+      <div class="site-risk">RISK ${s.risk_score} &middot; ${s.priority}</div>
+      <div class="site-meta">${s.detection_count} DETECTIONS &middot; ${s.active_days} ACTIVE DAYS${s.location_name ? ' &middot; ' + s.location_name : ''}</div>
+      <button class="site-btn" onclick="event.stopPropagation(); window.location.href='/dashboard/dossier?h3=${encodeURIComponent(s.h3_cell)}'">VIEW INVESTIGATION</button>
+    `;
+    d.onclick = () => selectSite(s);
+    list.appendChild(d);
+  });
+}
+
+function clear(){
+  markers.forEach(m => map.removeLayer(m)); 
+  markers=[];
+}
+
+function clearH3Layers() {
+  h3Layers.forEach(layer => map.removeLayer(layer));
+  h3Layers = [];
+}
+
+function h3Color(site) {
+  switch (site.ml_classification) {
+    case "Industrial":
+      return "#8B3A2B";
+    case "Agricultural":
+      return "#4B6B4E";
+    case "Wildfire":
+      return "#B65E2E";
+    case "Flare":
+      return "#9C7A24";
+    default:
+      return "#4B5D50";
+  }
+}
+
+function addH3Cell(site) {
+  if (!site.h3_cell) return;
+
+  try {
+    const boundary = h3.cellToBoundary(site.h3_cell, true);
+    const latLngs = boundary.map(([lng, lat]) => [lat, lng]);
+
+    const polygon = L.polygon(latLngs, {
+      color: h3Color(site),
+      fillColor: h3Color(site),
+      weight: 1.5,
+      opacity: 0.75,
+      fillOpacity: 0.18
+    }).addTo(map);
+
+    polygon.bindTooltip(
+      `<strong>Probable ${site.ml_classification}</strong><br>
+       Risk: ${site.risk_score}<br>
+       Priority: ${site.priority}<br>
+       H3: ${site.h3_cell}`,
+      {
+        sticky: true
+      }
+    );
+
+    polygon.on("mouseover", function () {
+      this.setStyle({
+        fillOpacity: 0.30,
+        weight: 2
+      });
+    });
+
+    polygon.on("mouseout", function () {
+      const isSelected = this._agninetraSite?.h3_cell === selectedH3Cell;
+      this.setStyle({
+        fillOpacity: isSelected ? 0.45 : 0.18,
+        weight: isSelected ? 3 : 1.5,
+        opacity: isSelected ? 1 : 0.75
+      });
+    });
+
+    polygon.on("click", function () {
+      selectSite(site);
+    });
+
+    polygon._agninetraSite = site;
+    polygon.bringToBack();
+    h3Layers.push(polygon);
+
+  } catch (error) {
+    console.warn("Unable to render H3 cell:", site.h3_cell, error);
+  }
+}
+
+function marker(site) {
+  const c = color(site.priority); 
+  const icon = L.divIcon({
+    className:'',
+    html:`<div style="width:14px;height:14px;border-radius:50%;background:${c};border:2px solid white;"></div>`,
+    iconSize:[14,14],
+    iconAnchor:[7,7]
+  }); 
+  const m = L.marker([site.latitude,site.longitude],{icon}).addTo(map); 
+  m.on('click', () => selectSite(site)); 
+  m._agninetraSite = site;
+  markers.push(m);
+}
+
+function show(site) {
+  const p = document.getElementById('panel');
+  
+  document.getElementById('details').innerHTML = `
+    <div class="metric"><span>Site ID</span><span>${site.h3_cell}</span></div>
+    <div class="metric"><span>Location</span><span>${site.location_name || 'Unavailable'}</span></div>
+    <div class="metric"><span>Priority</span><span>${site.priority}</span></div>
+    <div class="metric"><span>Probable source classification</span><span>Probable ${site.ml_classification}</span></div>
+    <div class="metric"><span>Model confidence</span><span>${(site.ml_confidence * 100).toFixed(1)}%</span></div>
+    <div class="metric"><span>Model</span><span>Evidence-based XGBoost</span></div>
+    <div class="metric"><span>Previous heuristic classification</span><span>${site.classification}</span></div>
+    <div class="metric"><span>Risk score</span><span>${site.risk_score}/100</span></div>
+    <div class="metric"><span>Persistence</span><span>${site.persistence_score}</span></div>
+    <div class="metric"><span>Detections</span><span>${site.detection_count}</span></div>
+    <div class="metric"><span>Active days</span><span>${site.active_days}</span></div>
+    <div class="metric"><span>Average FRP</span><span>${site.avg_frp} MW</span></div>
+    <div class="metric"><span>Peak FRP</span><span>${site.max_frp} MW</span></div>
+    <div class="metric"><span>Nightfire</span><span>${site.nightfire_match ? 'YES' : 'NO'} (${site.nightfire_matches})</span></div>
+    <div class="metric"><span>TROPOMI NO2 contextual mean</span><span>${site.no2_mean ?? 'N/A'}</span></div>
+    <div class="metric"><span>TROPOMI NO2 contextual max</span><span>${site.no2_max ?? 'N/A'}</span></div>
+    <div class="metric"><span>Observed</span><span>${site.first_detection} → ${site.last_detection}</span></div>
+    <button class="btn-ink" onclick="window.location.href='/dashboard/dossier?h3=${encodeURIComponent(site.h3_cell)}'" style="margin-top:16px;">VIEW INVESTIGATION DOSSIER</button>
+  `;
+
+  p.style.display = 'block';
+}
+
+function render(){
+  clear();
+  clearH3Layers();
+  const visible = getFilteredSites(); 
+  visible.forEach(addH3Cell);
+  visible.forEach(marker);
+  applySelectionHighlight();
+  renderList();
+}
+
+document.getElementById('filter').onchange = () => {
+  hideSearchResults();
+  render();
+};
+document.getElementById('close').onclick = () => document.getElementById('panel').style.display='none';
+
+document.getElementById('searchBtn').onclick = performSearch;
+document.getElementById('searchInput').addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    performSearch();
+  } else if (event.key === 'Escape') {
+    document.getElementById('searchInput').value = '';
+    hideSearchResults();
+    renderList();
+  }
+});
+document.addEventListener('click', event => {
+  const searchWrap = document.getElementById('searchWrap');
+  if (!searchWrap.contains(event.target)) {
+    hideSearchResults();
+  }
+});
+
+fetch('/risk-sites')
+  .then(r => r.json())
+  .then(data => {
+    sites = data.risk_sites; 
+    document.getElementById('total').textContent = sites.length; 
+    document.getElementById('industrial').textContent = sites.filter(s => s.ml_classification === 'Industrial').length; 
+    document.getElementById('medium').textContent = sites.filter(s => s.priority === 'MEDIUM').length; 
+    document.getElementById('high').textContent = sites.filter(s => s.priority === 'HIGH').length; 
+    render();
+  })
+  .catch(() => document.getElementById('list').textContent = 'Unable to load satellite data.');
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{
+  "folds": 5,
+  "shuffle": true,
+  "random_state": 42,
+  "samples": 145,
+  "features": [
+    "persistence_score",
+    "active_days",
+    "detection_count",
+    "avg_frp",
+    "max_frp",
+    "frp_stddev",
+    "frp_coefficient_variation",
+    "avg_brightness_temperature",
+    "night_ratio",
+    "nightfire_match",
+    "nightfire_matches",
+    "no2_mean",
+    "no2_max"
+  ],
+  "accuracy": 0.9724137931034482,
+  "balanced_accuracy": 0.7142857142857143,
+  "precision": 1.0,
+  "recall": 0.42857142857142855,
+  "f1": 0.6,
+  "confusion_matrix": [
+    [
+      138,
+      0
+    ],
+    [
+      4,
+      3
+    ]
+  ],
+  "classification_report": {
+    "Agricultural": {
+      "precision": 0.971830985915493,
+      "recall": 1.0,
+      "f1-score": 0.9857142857142858,
+      "support": 138.0
+    },
+    "Industrial": {
+      "precision": 1.0,
+      "recall": 0.42857142857142855,
+      "f1-score": 0.6,
+      "support": 7.0
+    },
+    "accuracy": 0.9724137931034482,
+    "macro avg": {
+      "precision": 0.9859154929577465,
+      "recall": 0.7142857142857143,
+      "f1-score": 0.7928571428571429,
+      "support": 145.0
+    },
+    "weighted avg": {
+      "precision": 0.9731908693540555,
+      "recall": 0.9724137931034482,
+      "f1-score": 0.9670935960591133,
+      "support": 145.0
+    }
+  }
+}
