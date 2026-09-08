@@ -380,6 +380,262 @@
       aside { max-height: 45vh; border-right: 0; border-bottom: 1px solid var(--border-medium); }
       .map { height: 55vh; }
       .panel { left: 16px; right: 16px; width: auto; top: 16px; max-height: calc(100% - 32px); }
+      .demo-console { left: 16px; right: 16px; width: auto; top: 16px; max-height: calc(100% - 32px); }
+    }
+
+    /* ── Live Simulation Demo Styling ───────────────────────────── */
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .demo-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--text-primary);
+      color: var(--bg-surface);
+      border: 1px solid var(--text-primary);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 8px 14px;
+      cursor: pointer;
+      transition: all 140ms ease;
+      box-shadow: var(--shadow-sm);
+    }
+    .demo-btn:hover:not(:disabled) {
+      background: #2D4032;
+      border-color: #2D4032;
+      transform: translateY(-1px);
+    }
+    .demo-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    .demo-btn-icon {
+      font-size: 10px;
+      color: #E2A03F;
+    }
+    .demo-btn-reset {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 7px 12px;
+      cursor: pointer;
+      transition: all 140ms ease;
+    }
+    .demo-btn-reset:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+      border-color: var(--border-focus);
+    }
+
+    /* Pulse animation for H3 polygon */
+    @keyframes h3PulseAnimation {
+      0% {
+        fill-opacity: 0.20;
+        stroke-width: 2px;
+      }
+      50% {
+        fill-opacity: 0.82;
+        stroke-width: 4.5px;
+      }
+      100% {
+        fill-opacity: 0.20;
+        stroke-width: 2px;
+      }
+    }
+    .h3-pulse-active {
+      animation: h3PulseAnimation 1.2s ease-in-out infinite !important;
+      stroke: #8B3A2B !important;
+      fill: #8B3A2B !important;
+    }
+
+    /* Simulation HUD Console */
+    .demo-console {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 380px;
+      max-width: calc(100% - 40px);
+      z-index: 1050;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-medium);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      padding: 16px;
+      font-family: var(--font-sans);
+      overflow: hidden;
+      animation: demoFadeIn 0.2s ease;
+    }
+    @keyframes demoFadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .demo-console-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+    .demo-console-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-primary);
+    }
+    .demo-live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--status-danger-bg);
+      color: var(--status-danger);
+      border: 1px solid var(--status-danger);
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 2px 6px;
+      text-transform: uppercase;
+    }
+    .demo-live-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--status-danger);
+      animation: demoBlink 1s infinite alternate;
+    }
+    @keyframes demoBlink {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+    .demo-pipeline-progress {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+    .demo-pipe-step {
+      flex: 1;
+      height: 4px;
+      background: var(--border-subtle);
+      border-radius: 1px;
+      transition: background 0.3s ease;
+    }
+    .demo-pipe-step.active {
+      background: #B65E2E;
+    }
+    .demo-pipe-step.completed {
+      background: var(--status-success);
+    }
+    .demo-step-content {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .demo-banner {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-medium);
+      background: var(--bg-surface-elevated);
+    }
+    .demo-banner.danger {
+      border-color: var(--status-danger);
+      background: var(--status-danger-bg);
+    }
+    .demo-banner.warning {
+      border-color: var(--status-warning);
+      background: var(--status-warning-bg);
+    }
+    .demo-banner.success {
+      border-color: var(--status-success);
+      background: var(--status-success-bg);
+    }
+    .demo-banner-headline {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .demo-card-field {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      padding: 3px 0;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .demo-card-field:last-of-type {
+      border-bottom: none;
+    }
+    .demo-card-field .label {
+      color: var(--text-secondary);
+    }
+    .demo-card-field .val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .demo-disclaimer {
+      font-size: 10px;
+      font-style: italic;
+      color: var(--text-muted);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+    .demo-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .demo-action-btn {
+      flex: 1;
+      padding: 8px 10px;
+      font-family: var(--font-sans);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      border: 1px solid var(--border-medium);
+      transition: background 140ms ease;
+    }
+    .demo-action-primary {
+      background: var(--primary);
+      color: var(--text-inverse);
+      border-color: var(--primary);
+    }
+    .demo-action-primary:hover {
+      background: var(--primary-hover);
+    }
+    .demo-action-secondary {
+      background: var(--bg-surface-elevated);
+      color: var(--text-secondary);
+    }
+    .demo-action-secondary:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
     }
   </style>
 </head>
@@ -389,9 +645,17 @@
     <div class="title">AgniNetra</div>
     <div class="sub">National Thermal Intelligence Platform</div>
   </div>
-  <div class="system-status">
-    <span class="status-dot"></span>
-    SYSTEM ACTIVE
+  <div class="header-actions">
+    <button id="runDemoBtn" class="demo-btn" type="button" title="Run live pipeline simulation with top risk site">
+      <span class="demo-btn-icon">▶</span> Run Live Simulation
+    </button>
+    <button id="resetDemoBtn" class="demo-btn-reset" type="button" style="display: none;" title="Reset simulation view">
+      ✕ Reset
+    </button>
+    <div class="system-status">
+      <span class="status-dot"></span>
+      SYSTEM ACTIVE
+    </div>
   </div>
 </header>
 <main>
@@ -446,6 +710,7 @@
       </div>
       <div id="details"></div>
     </div>
+    <div class="demo-console" id="demoConsole" style="display:none;"></div>
   </section>
 </main>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -453,6 +718,9 @@
 <script>
 let sites=[], markers=[], h3Layers=[], selectedH3Cell=null; 
 const map = L.map('map').setView([22.5,79],5); 
+window.map = map;
+window.h3Layers = h3Layers;
+window.sites = sites;
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap contributors'}).addTo(map);
 
 const color = p => p === 'HIGH' ? '#8B3A2B' : p === 'MEDIUM' ? '#9C7A24' : '#4B6B4E';
@@ -750,6 +1018,7 @@ fetch('/risk-sites')
   .then(r => r.json())
   .then(data => {
     sites = data.risk_sites; 
+    window.sites = sites;
     document.getElementById('total').textContent = sites.length; 
     document.getElementById('industrial').textContent = sites.filter(s => s.ml_classification === 'Industrial').length; 
     document.getElementById('medium').textContent = sites.filter(s => s.priority === 'MEDIUM').length; 
@@ -758,5 +1027,6 @@ fetch('/risk-sites')
   })
   .catch(() => document.getElementById('list').textContent = 'Unable to load satellite data.');
 </script>
+<script src="demo.js"></script>
 </body>
 </html>

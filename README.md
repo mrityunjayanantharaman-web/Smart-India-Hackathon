@@ -2,6 +2,37 @@
 
 AgniNetra is a national thermal intelligence platform that turns satellite fire detections and supporting evidence into persistent-site intelligence, risk scores, dossiers, and investigation reports.
 
+## Current Capabilities
+
+- **3-Class Classification Model:** Classifies persistent thermal sites into 3 classes (`Agricultural`, `Industrial`, `Wildfire`) using XGBoost trained on contextual features.
+- **Evidence-Based Weak Labeling:** Generates heuristic labels using a single multi-factor weighted scoring function (`data/evidence_labels.py`) across Nightfire detections, Sentinel-5P NO2 tropospheric columns, ESA WorldCover land cover, OSM power plant proximity, and VIIRS FRP characteristics.
+- **H3 Spatial Indexing:** Groups thermal detections by H3 hexagon cells (`data/persistent_sites.py`, `GROUP BY h3_cell`) to identify repeat detection sites and calculate persistence metrics without multi-cell neighbor merging.
+- **Interactive Web Dashboard:** Leaflet-based map interface with live OpenStreetMap (OSM) tile layers (`frontend/index.html`) displaying persistent sites, confidence tiers, and site dossiers.
+- **Automated Dossiers & PDF Reports:** Generates forensic site dossiers and downloadable PDF investigation reports with thermal history charts and site metadata.
+
+## Model Validation Notes
+
+- **Training Data:** The evidence-label model is trained on 36 usable sites using weak/heuristic labels (not ground-truth labels).
+- **Validation Scheme:** Evaluated using class-size-capped stratified k-fold cross-validation (4 folds, capped by the smallest class — `Industrial` with 4 samples; class distribution: Agricultural: 22, Wildfire: 10, Industrial: 4).
+- **Caveats:** As documented in `ai/evidence_model_validation.json`:
+  > *"Metrics measure agreement with evidence-based weak labels and are not ground-truth real-world accuracy. The dataset is small, so results should be treated as provisional."*
+
+## Roadmap / Not Yet Implemented
+
+The following features represent future milestones and are not yet active in the current implementation:
+
+- **5-Class Granular Taxonomy:** Expansion from 3 classes to 5 distinct categories (industrial, flare, stubble, mining, wildfire).
+- **Anchor-Triangulated Ground Truth & Cleanlab:** Independent anchor-source validation and label-noise cleaning.
+- **H3 Multi-Cell Cluster Merging:** Aggregating adjacent H3 neighbor cells into continuous spatial cluster boundaries.
+- **Offline GIS Support:** MapLibre GL + PMTiles vector tiling for offline air-gapped deployments.
+- **Conformal Calibration:** Distribution-free prediction intervals and coverage guarantees.
+- **Emissions Metering:** Quantitative emission estimates (tonnes CO2 / PM2.5).
+- **Downwind Exposure Modeling:** Dispersion modeling and population impact estimation using atmospheric (ERA5) and demographic (WorldPop) datasets.
+- **Monsoon Normalization:** Seasonal cloud-cover adjustment and normalization.
+- **Geographic Holdout Validation:** Spatial cross-validation across distinct climate and geographic holdout zones.
+- **Case-Closure Re-Verification:** Automated post-intervention satellite re-monitoring.
+
+
 ## Project Structure
 
 ```text
