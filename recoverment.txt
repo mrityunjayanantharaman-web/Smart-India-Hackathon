@@ -1,0 +1,32 @@
+AgniNetra Recovery Checklist
+============================
+
+1. Open PowerShell in the project directory:
+   cd "C:\Users\<your-user>\Downloads\SIH\AgniNetra"
+
+2. Confirm the virtual environment exists:
+   Test-Path .\venv\Scripts\python.exe
+
+   If it does not exist, recreate it and install dependencies:
+   python -m venv venv
+   .\venv\Scripts\python.exe -m pip install -r requirements.txt
+
+3. Confirm the local database exists:
+   Test-Path .\data\processed\agninetra.duckdb
+
+   Restore the database and generated files from the project backup if this returns False.
+
+4. Start the application:
+   .\venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8000
+
+5. Verify the service:
+   Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8000/health
+
+6. Open the dashboard:
+   http://127.0.0.1:8000/dashboard/
+
+If port 8000 is already in use, stop the old process or start on another port:
+   .\venv\Scripts\python.exe -m uvicorn backend.main:app --host 127.0.0.1 --port 8001
+
+Do not commit .env, data/raw/, or data/processed/. These paths may contain credentials,
+large source files, or generated local data and are intentionally ignored by Git.
