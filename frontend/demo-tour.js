@@ -11,7 +11,7 @@
 
   const steps = [
     {
-      target: "#overviewStats",
+      target: ".demo-tour__intro",
       title: "Let's take a quick tour",
       description: "See how AgniNetra turns satellite observations into a clear investigation workflow.",
       duration: 2400,
