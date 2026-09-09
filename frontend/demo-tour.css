@@ -1,0 +1,220 @@
+.demo-run-button {
+  margin-left: 14px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font: 700 11px var(--font-sans);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.demo-run-button:hover,
+.demo-run-button:focus-visible {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--text-inverse);
+  outline: none;
+}
+
+.demo-tour {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  pointer-events: none;
+  font-family: var(--font-sans);
+}
+
+.demo-tour[hidden] {
+  display: none;
+}
+
+.demo-tour__shade {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 23, 17, 0.58);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+.demo-tour.is-active .demo-tour__shade {
+  opacity: 1;
+}
+
+.demo-tour__spotlight {
+  position: absolute;
+  border: 2px solid #F1EEE3;
+  border-radius: 5px;
+  box-shadow: 0 0 0 9999px rgba(14, 23, 17, 0.58), 0 0 0 5px rgba(241, 238, 227, 0.16);
+  opacity: 0;
+  transition: top 260ms ease, left 260ms ease, width 260ms ease, height 260ms ease, opacity 180ms ease;
+}
+
+.demo-tour.is-targeted .demo-tour__spotlight {
+  opacity: 1;
+}
+
+.demo-tour__card {
+  position: absolute;
+  left: 50%;
+  bottom: 30px;
+  width: min(420px, calc(100vw - 32px));
+  padding: 18px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 14px 34px rgba(14, 23, 17, 0.24);
+  color: var(--text-primary);
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition: opacity 220ms ease, transform 220ms ease;
+  pointer-events: auto;
+}
+
+.demo-tour.is-active .demo-tour__card {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.demo-tour__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--text-secondary);
+  font: 700 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.demo-tour__title {
+  margin: 9px 0 5px;
+  font: 700 20px var(--font-display);
+}
+
+.demo-tour__description {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.demo-tour__progress {
+  height: 3px;
+  margin: 15px 0;
+  background: var(--border-subtle);
+  overflow: hidden;
+}
+
+.demo-tour__progress-bar {
+  height: 100%;
+  background: var(--thermal-accent);
+  transition: width 260ms ease;
+}
+
+.demo-tour__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.demo-tour__controls {
+  display: flex;
+  gap: 7px;
+}
+
+.demo-tour__button {
+  min-width: 72px;
+  padding: 7px 9px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-primary);
+  font: 700 10px var(--font-sans);
+  cursor: pointer;
+}
+
+.demo-tour__button:hover,
+.demo-tour__button:focus-visible {
+  background: var(--bg-card-hover);
+  outline: none;
+}
+
+.demo-tour__button--primary {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: var(--text-inverse);
+}
+
+.demo-tour__button--primary:hover,
+.demo-tour__button--primary:focus-visible {
+  background: var(--primary-hover);
+}
+
+.demo-tour__status {
+  min-height: 18px;
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.demo-tour__intro {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(470px, calc(100vw - 32px));
+  padding: 26px;
+  border: 1px solid var(--border-medium);
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 16px 40px rgba(14, 23, 17, 0.28);
+  text-align: center;
+  opacity: 0;
+  transform: translate(-50%, -45%);
+  transition: opacity 240ms ease, transform 240ms ease;
+  pointer-events: auto;
+}
+
+.demo-tour.is-intro .demo-tour__intro {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}
+
+.demo-tour__intro h2 {
+  margin: 7px 0;
+  font: 700 28px var(--font-display);
+}
+
+.demo-tour__intro p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .demo-run-button {
+    margin-left: 5px;
+    padding: 6px 7px;
+    font-size: 10px;
+  }
+
+  .system-status {
+    gap: 5px;
+    font-size: 10px;
+  }
+
+  .demo-tour__card {
+    bottom: 16px;
+  }
+
+  .demo-tour__actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .demo-tour__controls {
+    justify-content: flex-end;
+  }
+}

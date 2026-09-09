@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AgniNetra | National Thermal Intelligence Index</title>
   <link rel="stylesheet" href="tokens.css">
+  <link rel="stylesheet" href="demo-tour.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <style>
     body {
@@ -392,12 +393,13 @@
   <div class="system-status">
     <span class="status-dot"></span>
     SYSTEM ACTIVE
+    <button type="button" class="demo-run-button" id="demoRunButton" aria-haspopup="dialog">&#9654; Demo Run</button>
   </div>
 </header>
 <main>
   <aside>
     <div class="eyebrow">NATIONAL OVERVIEW</div>
-    <div class="stats">
+    <div class="stats" id="overviewStats">
       <div class="stat"><div class="value" id="total">-</div><div class="label">Persistent Sites</div></div>
       <div class="stat"><div class="value" id="industrial">-</div><div class="label">Industrial</div></div>
       <div class="stat"><div class="value" id="medium">-</div><div class="label">Medium Risk</div></div>
@@ -758,5 +760,6 @@ fetch('/risk-sites')
   })
   .catch(() => document.getElementById('list').textContent = 'Unable to load satellite data.');
 </script>
+<script src="demo-tour.js"></script>
 </body>
 </html>
