@@ -34,9 +34,11 @@
 .demo-tour__shade {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: rgba(14, 23, 17, 0.58);
   opacity: 0;
-  transition: opacity 220ms ease;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  transition: opacity 220ms ease, clip-path 320ms ease;
 }
 
 .demo-tour.is-active .demo-tour__shade {
@@ -45,11 +47,16 @@
 
 .demo-tour__spotlight {
   position: absolute;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.34);
   border: 2px solid #F1EEE3;
   border-radius: 5px;
-  box-shadow: 0 0 0 9999px rgba(14, 23, 17, 0.58), 0 0 0 5px rgba(241, 238, 227, 0.16);
+  box-shadow: 0 0 0 5px rgba(241, 238, 227, 0.24), 0 8px 22px rgba(14, 23, 17, 0.24), inset 0 0 22px rgba(241, 238, 227, 0.14);
+  -webkit-backdrop-filter: brightness(1.55) saturate(1.08);
+  backdrop-filter: brightness(1.55) saturate(1.08);
   opacity: 0;
-  transition: top 260ms ease, left 260ms ease, width 260ms ease, height 260ms ease, opacity 180ms ease;
+  pointer-events: none;
+  transition: top 320ms ease, left 320ms ease, width 320ms ease, height 320ms ease, opacity 180ms ease;
 }
 
 .demo-tour.is-targeted .demo-tour__spotlight {
@@ -58,6 +65,7 @@
 
 .demo-tour__card {
   position: absolute;
+  z-index: 3;
   left: 50%;
   bottom: 30px;
   width: min(420px, calc(100vw - 32px));
@@ -71,6 +79,11 @@
   transform: translate(-50%, 12px);
   transition: opacity 220ms ease, transform 220ms ease;
   pointer-events: auto;
+}
+
+.demo-tour__card.is-repositioned {
+  bottom: auto;
+  top: var(--demo-card-top);
 }
 
 .demo-tour.is-active .demo-tour__card {

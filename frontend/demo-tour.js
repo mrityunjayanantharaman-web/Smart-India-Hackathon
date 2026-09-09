@@ -11,6 +11,7 @@
 
   const steps = [
     {
+      target: "#overviewStats",
       title: "Let's take a quick tour",
       description: "See how AgniNetra turns satellite observations into a clear investigation workflow.",
       duration: 2400,
@@ -98,6 +99,8 @@
   let paused = false;
   let demoState = null;
   let progressTimer = null;
+  let activeTarget = null;
+  let spotlightFrame = null;
 
   function targetFor(step) {
     if (!step.target) return null;
@@ -150,20 +153,55 @@
   const progressBar = tour.querySelector("#demoTourProgressBar");
   const pauseButton = tour.querySelector("#demoTourPause");
 
-  function positionSpotlight(target) {
+  function positionSpotlight(target, shouldScroll = true) {
+    activeTarget = target;
     if (!target) {
       tour.classList.remove("is-targeted");
+      tour.querySelector(".demo-tour__shade").style.clipPath = "polygon(0 0, 100% 0, 100% 100%, 0 100%)";
+      card.classList.remove("is-repositioned");
       return;
     }
-    target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+    if (shouldScroll) target.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
     window.setTimeout(() => {
+      if (activeTarget !== target || tour.hidden) return;
       const rect = target.getBoundingClientRect();
-      spotlight.style.top = `${Math.max(8, rect.top - 7)}px`;
-      spotlight.style.left = `${Math.max(8, rect.left - 7)}px`;
-      spotlight.style.width = `${Math.min(window.innerWidth - 16, rect.width + 14)}px`;
-      spotlight.style.height = `${Math.min(window.innerHeight - 16, rect.height + 14)}px`;
+      const padding = 7;
+      const top = Math.max(8, rect.top - padding);
+      const left = Math.max(8, rect.left - padding);
+      const right = Math.min(window.innerWidth - 8, rect.right + padding);
+      const bottom = Math.min(window.innerHeight - 8, rect.bottom + padding);
+      spotlight.style.top = `${top}px`;
+      spotlight.style.left = `${left}px`;
+      spotlight.style.width = `${Math.max(0, right - left)}px`;
+      spotlight.style.height = `${Math.max(0, bottom - top)}px`;
+      tour.querySelector(".demo-tour__shade").style.clipPath = `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 ${bottom}px, ${left}px ${bottom}px, ${left}px ${top}px, ${right}px ${top}px, ${right}px ${bottom}px, 0 ${bottom}px)`;
+      positionCard(rect);
       tour.classList.add("is-targeted");
     }, 80);
+  }
+
+  function positionCard(targetRect) {
+    const cardHeight = card.getBoundingClientRect().height;
+    const lowerEdge = window.innerHeight - 30;
+    const overlapsBottomCard = targetRect.bottom > lowerEdge - cardHeight && targetRect.top < lowerEdge;
+    if (overlapsBottomCard && targetRect.top > cardHeight + 24) {
+      card.style.setProperty("--demo-card-top", "24px");
+      card.classList.add("is-repositioned");
+      return;
+    }
+    card.classList.remove("is-repositioned");
+    card.style.removeProperty("--demo-card-top");
+  }
+
+  function refreshSpotlight() {
+    if (!activeTarget || tour.hidden) return;
+    if (spotlightFrame) return;
+    spotlightFrame = window.requestAnimationFrame(() => {
+      spotlightFrame = null;
+      const rect = activeTarget.getBoundingClientRect();
+      positionSpotlight(activeTarget, false);
+      if (rect.width === 0 || rect.height === 0) tour.classList.remove("is-targeted");
+    });
   }
 
   function setProgressMessage() {
@@ -208,11 +246,14 @@
     progressBar.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
     pauseButton.textContent = paused ? "Resume" : "Pause";
 
-    if (!isIntro) {
-      const target = targetFor(step);
-      positionSpotlight(target);
-      if (step.progress) setProgressMessage();
-      if (typeof step.action === "function") window.setTimeout(step.action, 220);
+    const target = targetFor(step);
+    positionSpotlight(target);
+    if (step.progress) setProgressMessage();
+    if (typeof step.action === "function") {
+      window.setTimeout(() => {
+        step.action();
+        if (!targetFor(step) && step.target) positionSpotlight(targetFor(step));
+      }, 220);
     }
 
     if (!paused) {
@@ -304,4 +345,6 @@
     if (tour.hidden || currentStep === 0) return;
     positionSpotlight(targetFor(steps[currentStep]));
   });
+
+  window.addEventListener("scroll", refreshSpotlight, true);
 })();
